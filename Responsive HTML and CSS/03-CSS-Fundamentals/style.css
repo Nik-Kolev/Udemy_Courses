@@ -5,7 +5,15 @@ h4,
 p,
 li {
     font-family: sans-serif;
+    color: #444;
 }
+
+h1,
+h2,
+h3 {
+    color: #1098ad;
+}
+
 h1 {
     font-size: 26px;
     text-transform: uppercase;
@@ -51,4 +59,42 @@ p {
 
 .related {
     list-style: none;
+}
+
+.main-header {
+    background-color: #f7f7f7;
+}
+
+aside {
+    background-color: #f7f7f7;
+    border-top: 5px solid #1098ad;
+    border-bottom: 5px solid #1098ad;
+}
+
+li :first-child {
+    font-weight: bold;
+}
+
+li :last-child {
+    font-style: italic;
+}
+
+a:link {
+    color: #1098ad;
+    text-decoration: none;
+}
+
+a:visited {
+    color: #1098ad;
+}
+
+a:hover {
+    color: orangered;
+    font-weight: bold;
+    text-decoration: underline orangered;
+}
+
+a:active {
+    background-color: black;
+    font-style: italic;
 }
