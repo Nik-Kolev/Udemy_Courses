@@ -1,9 +1,4 @@
-h1,
-h2,
-h3,
-h4,
-p,
-li {
+body {
     font-family: sans-serif;
     color: #444;
 }
