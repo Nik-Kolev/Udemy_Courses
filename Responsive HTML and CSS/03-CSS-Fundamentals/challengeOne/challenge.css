@@ -1,3 +1,8 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
 body {
     font-size: 22px;
     font-family: sans-serif;
@@ -6,6 +11,8 @@ body {
 
 .product {
     border: 4px solid black;
+    width: 825px;
+    margin: 50px auto;
 }
 
 .header-h2 {
@@ -13,6 +20,7 @@ body {
     text-align: center;
     background-color: #d4d4d479;
     text-transform: uppercase;
+    padding: 20px 0;
 }
 
 .converse-img {
@@ -30,6 +38,7 @@ body {
     font-size: 18px;
     color: #777;
     text-transform: uppercase;
+    margin-bottom: 20px;
 }
 
 .more-info:link,
@@ -44,10 +53,17 @@ body {
 
 .product-details {
     text-transform: uppercase;
+    margin-bottom: 15px;
+    margin-top: 30px;
 }
 
 .ul-list {
     list-style-type: square;
+    margin-left: 30px;
+}
+
+.ul-list li {
+    margin-bottom: 10px;
 }
 
 .add-button {
@@ -56,9 +72,10 @@ body {
     background-color: black;
     border: none;
     text-transform: uppercase;
-    font-weight: bold;
     cursor: pointer;
-    padding: 2px;
+    padding: 15px;
+    width: 100%;
+    border-top: 4px solid black;
 }
 
 .add-button:hover {
