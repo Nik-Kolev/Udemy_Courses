@@ -6,6 +6,7 @@
 body {
     font-family: sans-serif;
     color: #444;
+    position: relative;
 }
 
 .container {
@@ -22,6 +23,13 @@ body {
 
 nav {
     font-size: 18px;
+    text-align: center;
+}
+
+nav a:link {
+    margin-right: 30px;
+    margin-top: 10px;
+    display: inline-block;
 }
 
 article {
@@ -55,6 +63,20 @@ h1 {
 h2 {
     font-size: 40px;
     margin-bottom: 30px;
+    position: relative;
+}
+
+h2::after {
+    content: 'TOP';
+    background-color: #ffe70e;
+    color: #444;
+    font-size: 16px;
+    font-weight: bold;
+    display: inline-block;
+    padding: 5px 10px;
+    position: absolute;
+    right: -10px;
+    top: -25px;
 }
 
 h3 {
@@ -139,4 +161,18 @@ a:active {
 .post-img {
     width: 100%;
     height: auto;
+}
+
+button {
+    font-size: 20px;
+    padding: 20px;
+    cursor: pointer;
+    position: absolute;
+    bottom: 50px;
+    right: 50px;
+}
+
+h1::first-letter {
+    font-style: normal;
+    margin-right: 5px;
 }
