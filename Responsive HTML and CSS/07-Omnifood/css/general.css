@@ -25,8 +25,10 @@
     - Tints:
         #fdf2e9    
         #fae5d3
+        #eb984e
     - Shades:
          #cf711f
+         #45260a
     - Accents:
     - Greys :
         #6f6f6f (lightest gray allowed on #fdf2e9)
@@ -40,7 +42,7 @@ For free face images:
     - https://www.uifaces.co/
 
 --- 03 Shadows:
-
+    0 2.4 rem 4.8rem rgba(0, 0, 0, 0.75);
 --- 04 Border Radius:
         Default: 9px
         Medium: 11px
@@ -145,6 +147,7 @@ body {
     letter-spacing: 0.75px;
 }
 
+.btn,
 .btn:link,
 .btn:visited {
     display: inline-block;
@@ -155,6 +158,11 @@ body {
     font-weight: 600;
     /* Transition is on the original 'state' */
     transition: all 0.3s;
+
+    /* only for .btn */
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
 }
 
 .btn--full:link,
@@ -181,6 +189,18 @@ body {
 
     /* Trick to add border inside */
     box-shadow: inset 0 0 0 3px #fff;
+}
+
+.btn--form {
+    background-color: #45260a;
+    color: #fdf2e9;
+    align-self: end;
+    padding: 1.2rem;
+}
+
+.btn--form:hover {
+    background-color: #fff;
+    color: #555;
 }
 
 .link:link,
@@ -218,6 +238,13 @@ body {
     width: 3rem;
     height: 3rem;
     color: #e67e22;
+}
+
+*:focus {
+    outline: none;
+    /* outline: 4px dotted #e67e22;
+    outline-offset: 8px; */
+    box-shadow: 0 0 0 0.8rem rgba(230, 125, 34, 0.5);
 }
 
 /* Settings classes */
