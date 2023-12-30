@@ -64,6 +64,9 @@ html {
     /* Base font-size is 16px -> by making the font-size 62.5% we get 1 rem to be equal to 10px for easier calculations and respect user`s desired font-size. */
     font-size: 62.5%;
     overflow-x: hidden;
+
+    /* Does not work on Safari */
+    scroll-behavior: smooth;
 }
 
 body {

@@ -121,10 +121,11 @@ Instead 1rem = 1em = 16px */
 
     .btn-mobile-nav {
         display: block;
+        z-index: 999;
     }
 
     .main-nav {
-        background-color: rgba(255, 255, 255, 0.5);
+        background-color: rgba(255, 255, 255, 0.95);
 
         position: absolute;
         top: 0;
