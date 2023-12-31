@@ -29,8 +29,9 @@ links.forEach(x => {
 
     //Remove nav-open class to close the nav bar
     if (x.classList.contains('main-nav-link')) {
-      document.querySelector('.header').toggle('nav-open')
+      document.querySelector('.header').classList.toggle('nav-open')
     }
+
   })
 });
 
