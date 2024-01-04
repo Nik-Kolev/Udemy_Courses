@@ -1,0 +1,68 @@
+.story {
+    width: 75%;
+    margin: 0 auto;
+    box-shadow: 0 3rem 6rem rgba($color-black, 0.2);
+    background-color: rgba($color-white, 0.6);
+    border-radius: 3px;
+    padding: 6rem;
+    padding-left: 9rem;
+    font-size: $default-font-size;
+    transform: skewX(-12deg);
+    position: relative;
+
+    & > * {
+        transform: skewX(12deg);
+    }
+
+    &__shape {
+        float: left;
+
+        width: 15rem;
+        height: 15rem;
+        // makes a circle with 50% radius (using the height/width) and at 50% 50%
+        // (defines the center of the element, 1st 50% is for x, 2nd 50% for y)
+        shape-outside: circle(50% at 50% 50%);
+        clip-path: circle(50% at 50% 50%);
+        transform: translateX(-3rem) skewX(12deg);
+    }
+
+    &__image {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(1.4);
+        height: 100%;
+        transition: all 0.5s;
+    }
+
+    &__text {
+        transform: skewX(12deg);
+    }
+
+    &__caption {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, 20%);
+        color: $color-white;
+        text-transform: uppercase;
+        font-size: 1.7rem;
+        text-align: center;
+        opacity: 0;
+        transition: all 0.5s;
+        // fixes the 1px glitch moving
+
+        backface-visibility: hidden;
+    }
+
+    &:hover &__caption {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+    }
+
+    &:hover &__image {
+        transform: translate(-50%, -50%) scale(1);
+        // blurs the img and darkens it a bit
+        filter: blur(3px) brightness(80%);
+    }
+}
