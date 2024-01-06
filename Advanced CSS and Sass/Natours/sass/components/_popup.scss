@@ -31,11 +31,21 @@
         opacity: 0;
         transform: translate(-50%, -50%) scale(0.5);
         transition: all 0.5s 0.2s;
+
+        @include respond(tab-land) {
+            display: inline-block;
+        }
     }
 
     &__left {
         width: 33.33333%;
         display: table-cell;
+
+        @include respond(tab-land) {
+            display: flex;
+            width: 100%;
+            height: 30rem;
+        }
     }
 
     &__right {
@@ -48,6 +58,10 @@
     &__img {
         display: block;
         width: 100%;
+
+        @include respond(tab-land) {
+            width: 50%;
+        }
     }
 
     &__text {
