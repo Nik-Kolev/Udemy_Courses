@@ -33,7 +33,7 @@
         height: 100vh;
         position: fixed;
         top: 0;
-        left: 0;
+        right: 0;
         z-index: 1500;
 
         opacity: 0;
@@ -95,7 +95,7 @@
 
     &__icon {
         position: relative;
-        margin-top: 3.4rem;
+        margin-top: 3.5rem;
         &,
         &::before,
         &::after {
