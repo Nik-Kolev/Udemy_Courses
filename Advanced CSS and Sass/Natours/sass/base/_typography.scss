@@ -4,7 +4,6 @@ body {
     font-size: $default-font-size;
     line-height: 1.7;
     color: $color-grey-dark;
-    padding: 3rem;
 }
 
 .heading-primary {
@@ -26,6 +25,11 @@ body {
         animation-duration: 1s;
         animation-timing-function: ease-out;
 
+        @include respond(phone) {
+            letter-spacing: 1rem;
+            font-family: 5rem;
+        }
+
         /* animation-iteration-count: 3; - if we want the animation to run more times */
         /* animation-delay: 3s; - if we want a delay*/
     }
@@ -38,6 +42,11 @@ body {
 
         /* shorthand syntax for name/time and timing function  */
         animation: moveInRight 1s ease-out;
+
+        @include respond(phone) {
+            letter-spacing: 0.5rem;
+            font-family: 5rem;
+        }
     }
 }
 
@@ -51,6 +60,14 @@ body {
     color: transparent;
     letter-spacing: 2px;
     transition: all 0.2s;
+
+    @include respond(tab-port) {
+        font-size: 3rem;
+    }
+
+    @include respond(phone) {
+        font-size: 2.5rem;
+    }
 
     &:hover {
         transform: skewY(2deg) skewX(15deg) scale(1.1);
