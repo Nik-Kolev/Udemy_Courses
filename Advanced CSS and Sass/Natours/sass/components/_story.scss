@@ -29,11 +29,27 @@
 
         width: 15rem;
         height: 15rem;
+        position: relative;
         // makes a circle with 50% radius (using the height/width) and at 50% 50%
         // (defines the center of the element, 1st 50% is for x, 2nd 50% for y)
         shape-outside: circle(50% at 50% 50%);
+        -webkit-clip-path: circle(50% at 50% 50%);
         clip-path: circle(50% at 50% 50%);
         transform: translateX(-3rem) skewX(12deg);
+        overflow: hidden;
+        border-radius: 50%;
+
+        @supports (
+            clip-path: polygon(0, 0) or
+                (
+                    -webkit-clip-path: polygon(0, 0),
+                )
+        ) {
+            /* clips the img - starting from the right and moving clockwise */
+            -webkit-clip-path: circle(50% at 50% 50%);
+            clip-path: circle(50% at 50% 50%);
+            border-radius: none;
+        }
 
         @include respond(phone) {
             transform: translate(-3rem) skewX(0);
