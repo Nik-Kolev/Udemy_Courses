@@ -1,1 +1,2 @@
-console.log('Your code goes here...');
+let userInput: unknown;
+console.log('haha');
