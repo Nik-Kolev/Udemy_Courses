@@ -1,5 +1,4 @@
 const Product = require("../models/product");
-const Cart = require("../models/cart");
 const { where } = require("sequelize");
 
 exports.getProducts = async (req, res, next) => {
@@ -88,16 +87,42 @@ exports.postCartDeleteProduct = async (req, res, next) => {
   }
 };
 
-exports.getOrders = (req, res, next) => {
-  res.render("shop/orders", {
-    path: "/orders",
-    pageTitle: "Your Orders",
-  });
+exports.postOrder = async (req, res, next) => {
+  try {
+    const cart = await req.user.getCart();
+    const products = await cart.getProducts();
+    await req.user.createOrder().then((order) => {
+      order.addProducts(
+        products.map((product) => {
+          product.orderItem = { quantity: product.cartItem.quantity };
+          return product;
+        })
+      );
+    });
+    await cart.setProducts(null);
+    res.redirect("/orders");
+  } catch (err) {
+    console.log(err);
+  }
 };
 
-exports.getCheckout = (req, res, next) => {
-  res.render("shop/checkout", {
-    path: "/checkout",
-    pageTitle: "Checkout",
-  });
+exports.getOrders = async (req, res, next) => {
+  try {
+    // fetches related products info instead it is just an id
+    const orders = await req.user.getOrders({ include: ["products"] });
+    res.render("shop/orders", {
+      path: "/orders",
+      pageTitle: "Your Orders",
+      orders: orders,
+    });
+  } catch (err) {
+    console.log(err);
+  }
 };
+
+// exports.getCheckout = (req, res, next) => {
+//   res.render("shop/checkout", {
+//     path: "/checkout",
+//     pageTitle: "Checkout",
+//   });
+// };
