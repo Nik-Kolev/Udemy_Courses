@@ -1,3 +1,4 @@
+const { where } = require("sequelize");
 const Product = require("../models/product");
 
 exports.getAddProduct = (req, res, next) => {
@@ -11,21 +12,23 @@ exports.getAddProduct = (req, res, next) => {
 exports.postAddProduct = async (req, res, next) => {
   try {
     const { title, imageUrl, price, description } = req.body;
-    const product = new Product(null, title, imageUrl, description, price);
-    await product.save();
+    await req.user.createProduct({ title, imageUrl, price, description });
     res.redirect("/");
   } catch (err) {
     console.log(err);
   }
 };
 
-exports.getEditProduct = (req, res, next) => {
-  const editMode = req.query.edit;
-  if (!editMode) {
-    return res.redirect("/");
-  }
-  const prodId = req.params.productId;
-  Product.findById(prodId, (product) => {
+exports.getEditProduct = async (req, res, next) => {
+  try {
+    const editMode = req.query.edit;
+    if (!editMode) {
+      return res.redirect("/");
+    }
+    const prodId = req.params.productId;
+    // const product = await Product.findByPk(prodId);
+    const product = await req.user.getProducts({ where: { id: prodId } });
+    // can use getProduct on the user - works the same way as findByPk
     if (!product) {
       return res.redirect("/");
     }
@@ -33,34 +36,39 @@ exports.getEditProduct = (req, res, next) => {
       pageTitle: "Edit Product",
       path: "/admin/edit-product",
       editing: editMode,
-      product: product,
+      product: product[0],
     });
-  });
+  } catch (err) {
+    console.log(err);
+  }
 };
 
-exports.postEditProduct = (req, res, next) => {
-  const prodId = req.body.productId;
-  const updatedTitle = req.body.title;
-  const updatedPrice = req.body.price;
-  const updatedImageUrl = req.body.imageUrl;
-  const updatedDesc = req.body.description;
-  const updatedProduct = new Product(prodId, updatedTitle, updatedImageUrl, updatedDesc, updatedPrice);
-  updatedProduct.save();
-  res.redirect("/admin/products");
+exports.postEditProduct = async (req, res, next) => {
+  try {
+    const { title, imageUrl, description, price } = req.body;
+    const prodId = req.body.productId;
+    await Product.update({ title, imageUrl, description, price }, { where: { id: prodId } });
+    res.redirect("/admin/products");
+  } catch (err) {
+    console.log(err);
+  }
 };
 
-exports.getProducts = (req, res, next) => {
-  Product.fetchAll((products) => {
+exports.getProducts = async (req, res, next) => {
+  try {
+    const products = await req.user.getProducts();
     res.render("admin/products", {
       prods: products,
       pageTitle: "Admin Products",
       path: "/admin/products",
     });
-  });
+  } catch (err) {
+    console.log(err);
+  }
 };
 
-exports.postDeleteProduct = (req, res, next) => {
+exports.postDeleteProduct = async (req, res, next) => {
   const prodId = req.body.productId;
-  Product.deleteById(prodId);
+  await Product.destroy({ where: { id: prodId } });
   res.redirect("/admin/products");
 };
