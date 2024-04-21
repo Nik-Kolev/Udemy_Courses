@@ -31,7 +31,8 @@ exports.getProduct = async (req, res, next) => {
 
 exports.getIndex = async (req, res, next) => {
   try {
-    const products = await Product.findAll();
+    const products = await Product.fetchAll();
+    console.log(products);
     res.render("shop/index", {
       prods: products,
       pageTitle: "Shop",

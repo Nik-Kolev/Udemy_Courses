@@ -1,11 +1,26 @@
-const Sequelize = require("sequelize");
+const mongodb = require("mongodb");
+const MongoClient = mongodb.MongoClient;
 
-const sequelize = new Sequelize("node-complete", "root", "ixl0lzstfu", {
-  dialect: "mysql",
-  host: "localhost",
-  logging: false,
-});
+let _db;
 
-// logging: false - stops the terminal spam with messages
+async function mongoConnect() {
+  try {
+    const connect = await MongoClient.connect("mongodb+srv://nik:ixl0lzstfu@atlascluster.37xqvmk.mongodb.net/");
+    _db = connect.db("nodeUdemy");
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+}
 
-module.exports = sequelize;
+const getDb = () => {
+  if (_db) {
+    return _db;
+  }
+  throw "No database found!";
+};
+
+module.exports = {
+  mongoConnect,
+  getDb,
+};
