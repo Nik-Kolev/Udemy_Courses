@@ -2,23 +2,22 @@ const Product = require("../models/product");
 const { where } = require("sequelize");
 
 exports.getProducts = async (req, res, next) => {
-  try {
-    const products = await Product.findAll();
-
-    res.render("shop/product-list", {
-      prods: products,
-      pageTitle: "All Products",
-      path: "/products",
-    });
-  } catch (err) {
-    console.log(err);
-  }
+  // try {
+  //   // const products = await Product.findAll();
+  //   res.render("shop/product-list", {
+  //     prods: products,
+  //     pageTitle: "All Products",
+  //     path: "/products",
+  //   });
+  // } catch (err) {
+  //   console.log(err);
+  // }
 };
 
 exports.getProduct = async (req, res, next) => {
   try {
     const prodId = req.params.productId;
-    const product = await Product.findByPk(prodId);
+    const product = await Product.fetchOne(prodId);
     res.render("shop/product-detail", {
       product: product,
       pageTitle: product.title,
@@ -32,7 +31,6 @@ exports.getProduct = async (req, res, next) => {
 exports.getIndex = async (req, res, next) => {
   try {
     const products = await Product.fetchAll();
-    console.log(products);
     res.render("shop/index", {
       prods: products,
       pageTitle: "Shop",
@@ -59,17 +57,21 @@ exports.getCart = async (req, res, next) => {
 exports.postCart = async (req, res, next) => {
   try {
     const prodId = req.body.productId;
-    const cart = await req.user.getCart();
-    const product = (await cart.getProducts({ where: { id: prodId } }))[0];
-    let prod;
-    let qty;
+    const product = await Product.fetchOne(prodId);
+    console.log(req.user);
+    const asd = await req.user.addToCart(product, req.user._id);
+    // console.log(asd);
+    //   const cart = await req.user.getCart();
+    //   const product = (await cart.getProducts({ where: { id: prodId } }))[0];
+    //   let prod;
+    //   let qty;
 
-    if (product) {
-      [qty, prod] = [product.cartItem.quantity + 1, product];
-    } else {
-      [qty, prod] = [1, await Product.findByPk(prodId)];
-    }
-    await cart.addProduct(prod, { through: { quantity: qty } });
+    //   if (product) {
+    //     [qty, prod] = [product.cartItem.quantity + 1, product];
+    //   } else {
+    //     [qty, prod] = [1, await Product.findByPk(prodId)];
+    //   }
+    //   await cart.addProduct(prod, { through: { quantity: qty } });
     res.redirect("/");
   } catch (err) {
     console.log(err);

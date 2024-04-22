@@ -4,6 +4,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 
 const errorController = require("./controllers/error");
+const User = require("./models/user");
 
 const app = express();
 
@@ -18,16 +19,15 @@ app.use(express.static(path.join(__dirname, "public")));
 
 const { mongoConnect } = require("./util/database");
 
-// app.use(async (req, res, next) => {
-//   // try {
-//   //   req.user = await User.findByPk(1);
-//   //   next();
-//   // } catch (err) {
-//   //   console.log(err);
-//   // }
-//   console.log("asd");
-//   next();
-// });
+app.use(async (req, res, next) => {
+  try {
+    const user = await User.findById("66269b9e439a01f5e9fda6ea");
+    req.user = new User(user.name, user.email, user.cart, user._id);
+    next();
+  } catch (err) {
+    console.log(err);
+  }
+});
 
 app.use("/admin", adminRoutes);
 app.use(shopRoutes);
