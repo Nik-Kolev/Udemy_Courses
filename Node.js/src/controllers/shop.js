@@ -1,23 +1,24 @@
-const Product = require("../models/product");
-const { where } = require("sequelize");
+const productModel = require("../models/product");
 
 exports.getProducts = async (req, res, next) => {
-  // try {
-  //   // const products = await Product.findAll();
-  //   res.render("shop/product-list", {
-  //     prods: products,
-  //     pageTitle: "All Products",
-  //     path: "/products",
-  //   });
-  // } catch (err) {
-  //   console.log(err);
-  // }
+  try {
+    // we can select some stuff and not everything or exclude something
+    // const products = await productModel.find().select("title price -_id").populate("userId", "name");
+    const products = await productModel.find().populate("userId");
+    res.render("shop/product-list", {
+      prods: products,
+      pageTitle: "All Products",
+      path: "/products",
+    });
+  } catch (err) {
+    console.log(err);
+  }
 };
 
 exports.getProduct = async (req, res, next) => {
   try {
     const prodId = req.params.productId;
-    const product = await Product.fetchOne(prodId);
+    const product = await productModel.findById(prodId);
     res.render("shop/product-detail", {
       product: product,
       pageTitle: product.title,
@@ -30,7 +31,7 @@ exports.getProduct = async (req, res, next) => {
 
 exports.getIndex = async (req, res, next) => {
   try {
-    const products = await Product.fetchAll();
+    const products = await productModel.find();
     res.render("shop/index", {
       prods: products,
       pageTitle: "Shop",
@@ -43,7 +44,7 @@ exports.getIndex = async (req, res, next) => {
 
 exports.getCart = async (req, res, next) => {
   try {
-    const products = await req.user.getCart();
+    const products = (await req.user.populate("cart.items.productId")).cart.items;
     res.render("shop/cart", {
       path: "/cart",
       pageTitle: "Your Cart",
@@ -57,8 +58,8 @@ exports.getCart = async (req, res, next) => {
 exports.postCart = async (req, res, next) => {
   try {
     const prodId = req.body.productId;
-    const product = await Product.fetchOne(prodId);
-    await req.user.addToCart(product, req.user._id);
+    const product = await productModel.findById(prodId);
+    await req.user.addToCart(product);
     res.redirect("/cart");
   } catch (err) {
     console.log(err);
@@ -68,7 +69,7 @@ exports.postCart = async (req, res, next) => {
 exports.postCartDeleteProduct = async (req, res, next) => {
   try {
     const prodId = req.body.productId;
-    await req.user.deleteItemFromCart(prodId);
+    await req.user.removeFromCart(prodId);
     res.redirect("/cart");
   } catch (err) {
     console.log(err);

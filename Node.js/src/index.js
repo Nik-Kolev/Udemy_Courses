@@ -2,9 +2,10 @@ const path = require("path");
 
 const express = require("express");
 const bodyParser = require("body-parser");
+const mongoose = require("mongoose");
 
 const errorController = require("./controllers/error");
-const User = require("./models/user");
+const userModel = require("./models/user");
 
 const app = express();
 
@@ -17,12 +18,9 @@ const shopRoutes = require("./routes/shop");
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 
-const { mongoConnect } = require("./util/database");
-
 app.use(async (req, res, next) => {
   try {
-    const user = await User.findById("66269b9e439a01f5e9fda6ea");
-    req.user = new User(user.name, user.email, user.cart, user._id);
+    req.user = await userModel.findById("6629641702224e67dd6915d3");
     next();
   } catch (err) {
     console.log(err);
@@ -36,8 +34,16 @@ app.use(errorController.get404);
 
 async function startServer() {
   try {
-    await mongoConnect();
-    console.log("Connected to MongoDB");
+    await mongoose.connect("mongodb+srv://nik:ixl0lzstfu@atlascluster.37xqvmk.mongodb.net/nodeUdemy");
+    if (!userModel.findOne()) {
+      userModel.create({
+        name: "Nik",
+        email: "kolev@abv.bg",
+        cart: {
+          items: [],
+        },
+      });
+    }
     app.listen(3030, () => {
       console.log("Server is listening on port 3030");
     });
