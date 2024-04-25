@@ -1,4 +1,5 @@
 const productModel = require("../models/product");
+const orderModel = require("../models/order");
 
 exports.getProducts = async (req, res, next) => {
   try {
@@ -78,7 +79,21 @@ exports.postCartDeleteProduct = async (req, res, next) => {
 
 exports.postOrder = async (req, res, next) => {
   try {
-    await req.user.addOrder();
+    const products = (await req.user.populate("cart.items.productId")).cart.items.map((item) => {
+      // spreading the product and adding._doc populates the data and instead of product Id only we get the full data
+      // .toObject() doesn`t bypass the schema and getters/setters -> its better
+      return { quantity: item.quantity, product: item.productId.toObject() };
+    });
+
+    const order = new orderModel({
+      user: {
+        name: req.user.name,
+        userId: req.user,
+      },
+      products: products,
+    });
+    await order.save();
+    await req.user.clearCart();
     res.redirect("/orders");
   } catch (err) {
     console.log(err);
@@ -87,7 +102,7 @@ exports.postOrder = async (req, res, next) => {
 
 exports.getOrders = async (req, res, next) => {
   try {
-    const orders = await req.user.getOrders();
+    const orders = await orderModel.find({ "user.userId": req.user._id });
     res.render("shop/orders", {
       path: "/orders",
       pageTitle: "Your Orders",
