@@ -12,6 +12,14 @@ exports.getLogin = async (req, res, next) => {
   }
 };
 
+exports.getSignup = async (req, res, next) => {
+  res.render("auth/signup", {
+    path: "/signup",
+    pageTitle: "Sign Up",
+    isAuthenticated: false,
+  });
+};
+
 exports.postLogin = async (req, res, next) => {
   try {
     req.session.isLoggedIn = true;
@@ -27,3 +35,5 @@ exports.postLogout = async (req, res, next) => {
     res.redirect("/");
   });
 };
+
+exports.postSignup = (req, res, next) => {};
