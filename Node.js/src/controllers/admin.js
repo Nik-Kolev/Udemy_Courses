@@ -47,7 +47,10 @@ exports.postEditProduct = async (req, res, next) => {
   try {
     const { title, price, description, imageUrl } = req.body;
     const prodId = req.body.productId;
-    await productModel.findByIdAndUpdate(prodId, { title, price, description, imageUrl });
+    const product = await productModel.findOneAndUpdate({ _id: prodId, userId: req.user._id }, { title, price, description, imageUrl }, { new: true });
+    if (product) {
+      return res.redirect("/");
+    }
     res.redirect("/admin/products");
   } catch (err) {
     console.log(err);
@@ -56,7 +59,7 @@ exports.postEditProduct = async (req, res, next) => {
 
 exports.getProducts = async (req, res, next) => {
   try {
-    const products = await productModel.find();
+    const products = await productModel.find({ userId: req.user._id });
     res.render("admin/products", {
       prods: products,
       pageTitle: "Admin Products",
@@ -69,6 +72,6 @@ exports.getProducts = async (req, res, next) => {
 
 exports.postDeleteProduct = async (req, res, next) => {
   const prodId = req.body.productId;
-  await productModel.findByIdAndDelete(prodId);
+  await productModel.findOneAndDelete({ _id: prodId, userId: req.user._id });
   res.redirect("/admin/products");
 };
