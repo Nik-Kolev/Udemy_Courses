@@ -1,16 +1,32 @@
 const productModel = require("../models/product");
+const { validationResult } = require("express-validator");
 
 exports.getAddProduct = (req, res, next) => {
   res.render("admin/edit-product", {
     pageTitle: "Add Product",
     path: "/admin/add-product",
     editing: false,
+    hasError: false,
+    errorMessage: null,
+    validationErrors: [],
   });
 };
 
 exports.postAddProduct = async (req, res, next) => {
   try {
     const { title, price, description, imageUrl } = req.body;
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).render("admin/edit-product", {
+        pageTitle: "Add Product",
+        path: "/admin/edit-product",
+        editing: false,
+        product: { title, price, description, imageUrl },
+        hasError: true,
+        errorMessage: errors.array()[0].msg,
+        validationErrors: errors.array(),
+      });
+    }
     await productModel.create({ title, price, description, imageUrl, userId: req.user._id });
     res.redirect("/");
   } catch (err) {
@@ -37,6 +53,9 @@ exports.getEditProduct = async (req, res, next) => {
       path: "/admin/edit-product",
       editing: editMode,
       product: product,
+      hasError: false,
+      errorMessage: null,
+      validationErrors: [],
     });
   } catch (err) {
     console.log(err);
@@ -47,6 +66,18 @@ exports.postEditProduct = async (req, res, next) => {
   try {
     const { title, price, description, imageUrl } = req.body;
     const prodId = req.body.productId;
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).render("admin/edit-product", {
+        pageTitle: "Edit Product",
+        path: "/admin/edit-product",
+        editing: true,
+        product: { title, price, description, imageUrl, _id: prodId },
+        hasError: true,
+        errorMessage: errors.array()[0].msg,
+        validationErrors: errors.array(),
+      });
+    }
     const product = await productModel.findOneAndUpdate({ _id: prodId, userId: req.user._id }, { title, price, description, imageUrl }, { new: true });
     if (product) {
       return res.redirect("/");

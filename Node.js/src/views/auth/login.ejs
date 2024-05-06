@@ -7,17 +7,17 @@
    <%- include('../includes/navigation.ejs') %>
 
     <main>
-        <% if (errorMessage.length > 0) { %>
+        <% if (errorMessage && errorMessage.length > 0) { %>
             <div class="user-message user-message--error"><%= errorMessage %></div>
         <% } %>
         <form class="login-form" action="/login" method="POST">
             <div class="form-control">
                 <label for="email">Email</label>
-                <input type="text" name="email" id="email">
+                <input type="text" name="email" id="email" value="<%= data.email %>">
             </div>
             <div class="form-control">
                 <label for="password">Password</label>
-                <input type="password" name="password" id="password" >
+                <input type="password" name="password" id="password" value="<%= data.password %>">
             </div>
             <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
             <button class="btn" type="submit">Login</button>

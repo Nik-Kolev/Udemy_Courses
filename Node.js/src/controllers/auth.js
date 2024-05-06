@@ -1,13 +1,16 @@
 const userModel = require("../models/user");
 const bcrypt = require("bcryptjs");
 const crypto = require("crypto");
+const { validationResult } = require("express-validator");
 
 exports.getLogin = async (req, res, next) => {
   try {
     res.render("auth/login", {
       path: "/login",
       pageTitle: "Login",
-      errorMessage: req.flash("error"),
+      errorMessage: null,
+      data: { email: "", password: "" },
+      validationErrors: [],
     });
   } catch (err) {
     console.log(err);
@@ -18,12 +21,25 @@ exports.getSignup = async (req, res, next) => {
   res.render("auth/signup", {
     path: "/signup",
     pageTitle: "Sign Up",
+    errorMessage: null,
+    data: { email: "", password: "", confirmPassword: "" },
+    validationErrors: [],
   });
 };
 
 exports.postLogin = async (req, res, next) => {
   try {
     const { email, password } = req.body;
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).render("auth/login", {
+        path: "/login",
+        pageTitle: "Login",
+        errorMessage: errors.array()[0].msg,
+        data: { email, password },
+        validationErrors: errors.array(),
+      });
+    }
     const user = await userModel.findOne({ email });
     if (!user) {
       req.flash("error", "Invalid Email or Password!");
@@ -50,11 +66,17 @@ exports.postLogout = async (req, res, next) => {
 exports.postSignup = async (req, res, next) => {
   try {
     const { email, password, confirmPassword } = req.body;
-    const hashedPassword = await bcrypt.hash(password, 12);
-    const user = await userModel.findOne({ email });
-    if (user) {
-      return res.redirect("/signup");
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).render("auth/signup", {
+        path: "/signup",
+        pageTitle: "Sign Up",
+        errorMessage: errors.array()[0].msg,
+        data: { email, password, confirmPassword },
+        validationErrors: errors.array(),
+      });
     }
+    const hashedPassword = await bcrypt.hash(password, 12);
     await userModel.create({ email, password: hashedPassword, cart: { items: [] } });
     res.redirect("/login");
   } catch (err) {
