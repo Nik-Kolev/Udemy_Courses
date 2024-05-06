@@ -19,7 +19,7 @@ exports.postAddProduct = async (req, res, next) => {
     if (!errors.isEmpty()) {
       return res.status(422).render("admin/edit-product", {
         pageTitle: "Add Product",
-        path: "/admin/edit-product",
+        path: "/admin/add-product",
         editing: false,
         product: { title, price, description, imageUrl },
         hasError: true,
@@ -30,7 +30,11 @@ exports.postAddProduct = async (req, res, next) => {
     await productModel.create({ title, price, description, imageUrl, userId: req.user._id });
     res.redirect("/");
   } catch (err) {
-    console.log(err);
+    // const error = new Error(err);
+    // error.httpStatusCode = 500;
+    // return next(error);
+    //short version:
+    next(new Error(err, 500));
   }
 };
 
@@ -58,7 +62,7 @@ exports.getEditProduct = async (req, res, next) => {
       validationErrors: [],
     });
   } catch (err) {
-    console.log(err);
+    next(new Error(err, 500));
   }
 };
 
@@ -84,7 +88,7 @@ exports.postEditProduct = async (req, res, next) => {
     }
     res.redirect("/admin/products");
   } catch (err) {
-    console.log(err);
+    next(new Error(err, 500));
   }
 };
 
@@ -97,7 +101,7 @@ exports.getProducts = async (req, res, next) => {
       path: "/admin/products",
     });
   } catch (err) {
-    console.log(err);
+    next(new Error(err, 500));
   }
 };
 

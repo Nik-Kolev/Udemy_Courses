@@ -13,7 +13,7 @@ exports.getLogin = async (req, res, next) => {
       validationErrors: [],
     });
   } catch (err) {
-    console.log(err);
+    next(new Error(err, 500));
   }
 };
 
@@ -53,7 +53,7 @@ exports.postLogin = async (req, res, next) => {
     req.session.user = user;
     res.redirect("/");
   } catch (err) {
-    console.log(err);
+    next(new Error(err, 500));
   }
 };
 
@@ -80,7 +80,7 @@ exports.postSignup = async (req, res, next) => {
     await userModel.create({ email, password: hashedPassword, cart: { items: [] } });
     res.redirect("/login");
   } catch (err) {
-    console.log(err);
+    next(new Error(err, 500));
   }
 };
 
@@ -112,6 +112,6 @@ exports.postReset = async (req, res, next) => {
       //send email for reset - not implemented
     });
   } catch (err) {
-    console.log(err);
+    next(new Error(err, 500));
   }
 };

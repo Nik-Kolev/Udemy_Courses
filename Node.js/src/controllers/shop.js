@@ -13,7 +13,7 @@ exports.getProducts = async (req, res, next) => {
       isAuthenticated: req.session.isLoggedIn,
     });
   } catch (err) {
-    console.log(err);
+    next(new Error(err, 500));
   }
 };
 
@@ -27,7 +27,7 @@ exports.getProduct = async (req, res, next) => {
       path: "/products",
     });
   } catch (err) {
-    console.log(err);
+    next(new Error(err, 500));
   }
 };
 
@@ -41,7 +41,7 @@ exports.getIndex = async (req, res, next) => {
       csrfToken: req.csrfToken(),
     });
   } catch (err) {
-    console.log(err);
+    next(new Error(err, 500));
   }
 };
 
@@ -54,7 +54,7 @@ exports.getCart = async (req, res, next) => {
       products: products,
     });
   } catch (err) {
-    console.log(err);
+    next(new Error(err, 500));
   }
 };
 
@@ -65,7 +65,7 @@ exports.postCart = async (req, res, next) => {
     await req.user.addToCart(product);
     res.redirect("/cart");
   } catch (err) {
-    console.log(err);
+    next(new Error(err, 500));
   }
 };
 
@@ -75,7 +75,7 @@ exports.postCartDeleteProduct = async (req, res, next) => {
     await req.user.removeFromCart(prodId);
     res.redirect("/cart");
   } catch (err) {
-    console.log(err);
+    next(new Error(err, 500));
   }
 };
 
@@ -98,7 +98,7 @@ exports.postOrder = async (req, res, next) => {
     await req.user.clearCart();
     res.redirect("/orders");
   } catch (err) {
-    console.log(err);
+    next(new Error(err, 500));
   }
 };
 
@@ -111,6 +111,6 @@ exports.getOrders = async (req, res, next) => {
       orders: orders,
     });
   } catch (err) {
-    console.log(err);
+    next(new Error(err, 500));
   }
 };

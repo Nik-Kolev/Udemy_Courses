@@ -32,30 +32,43 @@ app.use(session({ secret: "my secret", resave: false, saveUninitialized: false, 
 app.use(csrfProtection);
 app.use(flash());
 
-app.use(async (req, res, next) => {
-  try {
-    if (!req.session.user) {
-      return next();
-    }
-    const user = await userModel.findById(req.session.user._id);
-    req.user = user;
-    next();
-  } catch (err) {
-    console.log(err);
-  }
-});
-
 app.use((req, res, next) => {
   res.locals.isAuthenticated = req.session.isLoggedIn;
   res.locals.csrfToken = req.csrfToken();
   next();
 });
 
+app.use(async (req, res, next) => {
+  try {
+    if (!req.session.user) {
+      return next();
+    }
+    const user = await userModel.findById(req.session.user._id);
+    if (!user) {
+      return next();
+    }
+    req.user = user;
+    next();
+  } catch (err) {
+    next(new Error(err, 500));
+  }
+});
+
 app.use("/admin", adminRoutes);
 app.use(shopRoutes);
 app.use(authRoutes);
 
+app.get("/500", errorController.get500);
+
 app.use(errorController.get404);
+
+//Express skips 404 above and goes down to the error middleware, if there are more than one - it goes top to bottom
+
+app.use((error, req, res, next) => {
+  // res.status(error.httpStatusCode).render...
+  // res.redirect("/500");
+  res.status(500).render("500", { pageTitle: "Error!", path: "/500", isAuthenticated: req.session.isLoggedIn });
+});
 
 async function startServer() {
   try {
