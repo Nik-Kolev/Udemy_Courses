@@ -1,0 +1,13 @@
+<section class="pagination">
+  <% if (currentPage !== 1) { %>
+  <a href="?page=1">1</a>
+  <% } %> <% if (currentPage - 1 < totalPages && currentPage - 1 > 1) { %>
+  <a href="?page=<%=currentPage - 1 %>"><%= currentPage - 1 %></a>
+  <% } %>
+  <a href="?page=<%= currentPage %>" class="active"><%= currentPage %></a>
+  <% if (currentPage !== totalPages) { %>
+  <a href="?page=<%=currentPage + 1 %>"><%= currentPage + 1 %></a>
+  <% } %> <% if (totalPages !== currentPage && currentPage + 1 !== totalPages) { %>
+  <a href="?page=<%=totalPages %>"><%= totalPages %></a>
+  <% } %>
+</section>

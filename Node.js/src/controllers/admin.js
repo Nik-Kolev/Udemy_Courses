@@ -139,15 +139,19 @@ exports.getProducts = async (req, res, next) => {
   }
 };
 
-exports.postDeleteProduct = async (req, res, next) => {
-  const prodId = req.body.productId;
-  const product = await productModel.findOne({ _id: prodId, userId: req.user._id });
-  if (!product) {
-    throw new Error("Product not found");
+exports.deleteProduct = async (req, res, next) => {
+  try {
+    const prodId = req.params.productId;
+    const product = await productModel.findOne({ _id: prodId, userId: req.user._id });
+    if (!product) {
+      throw new Error("Product not found");
+    }
+    if (product.imageUrl) {
+      fileHelper.deleteFile(product.imageUrl);
+    }
+    await productModel.findOneAndDelete({ _id: prodId, userId: req.user._id });
+    res.status(200).json({ message: "success" });
+  } catch (err) {
+    res.status(500).json({ message: "Deleting product failed." });
   }
-  if (product.imageUrl) {
-    fileHelper.deleteFile(product.imageUrl);
-  }
-  await productModel.findOneAndDelete({ _id: prodId, userId: req.user._id });
-  res.redirect("/admin/products");
 };
