@@ -3,6 +3,7 @@ const orderModel = require("../models/order");
 const fs = require("fs");
 const path = require("path");
 const pdfKit = require("pdfkit");
+const stripe = require("stripe")("sk_test_51PEbPr09t9HM7aFCXzEigD7rtAPEASgmLGshs5yv9oZsu2QiTV6iwzJxDrBw0hF5JiIFO6SeUd9vmkGbdMvhOsoX00QE8U02f2");
 
 const ITEMS_PER_PAGE = 2;
 
@@ -224,6 +225,47 @@ exports.getInvoice = async (req, res, next) => {
     // res.setHeader("Content-Type", "Application/pdf");
     // res.setHeader("Content-Disposition", 'inline; filename="' + invoiceName + '"');
     // file.pipe(res);
+  } catch (err) {
+    console.log(err);
+    next(new Error(err, 500));
+  }
+};
+
+exports.getCheckout = async (req, res, next) => {
+  try {
+    const products = (await req.user.populate("cart.items.productId")).cart.items;
+    const totalSum = products.reduce((x, y) => {
+      return (x += y.quantity * y.productId.price);
+    }, 0);
+
+    const session = await stripe.checkout.sessions.create({
+      line_items: products.map((p) => {
+        return {
+          price_data: {
+            currency: "eur",
+            unit_amount: parseInt(Math.ceil(p.productId.price * 100)),
+            product_data: {
+              name: p.productId.title,
+              description: p.productId.description,
+              // it takes an array of images, but display the 1st one - this is a hardcoded image for testing
+              images: ["https://i.ebayimg.com/images/g/i5IAAOSwgyxWVOIQ/s-l1200.webp"],
+            },
+          },
+          quantity: p.quantity,
+        };
+      }),
+      mode: "payment",
+      success_url: req.protocol + "://" + req.get("host") + "/checkout/success", // => http://localhost:3030/checkout/success
+      cancel_url: req.protocol + "://" + req.get("host") + "/checkout/cancel",
+    });
+
+    res.render("shop/checkout", {
+      path: "/checkout",
+      pageTitle: "Checkout",
+      products,
+      totalSum,
+      sessionId: session.id,
+    });
   } catch (err) {
     console.log(err);
     next(new Error(err, 500));
