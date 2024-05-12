@@ -17,9 +17,10 @@ function errorHandler(error, req, res, statusCode) {
     res.status(statusCode).json({ message });
   } else if (error instanceof z.ZodError) {
     message = createErrorMessage(error);
-    res.status(statusCode).json({ message });
+    res.status(422).json({ message });
   } else {
     console.log("needs more work here");
+    console.log(error);
     res.status(statusCode).json({ message });
   }
   console.error(`Error: ${req.method} >> ${req.baseUrl}`, error);
