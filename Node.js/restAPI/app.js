@@ -41,6 +41,7 @@ app.use((req, res, next) => {
 });
 
 app.use(router);
+
 app.use((err, req, res, next) => {
   errorHandler(err, req, res, err.statusCode || 500);
 });
@@ -48,8 +49,10 @@ app.use((err, req, res, next) => {
 (async function startServer() {
   try {
     await mongoose.connect(MONGODB_URI);
-    app.listen(8080, () => {
-      console.log("Server is listening on port 8080");
+    const server = app.listen(8080);
+    const io = require("./socket").init(server);
+    io.on("connection", (socket) => {
+      console.log("Client connected");
     });
   } catch (err) {
     console.log(err);

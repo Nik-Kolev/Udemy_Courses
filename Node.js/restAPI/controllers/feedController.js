@@ -6,6 +6,8 @@ const clearImage = require("../utils/clearImage");
 const isAuth = require("../middleware/isAuth");
 const ValidationError = require("../utils/createValidationError");
 
+const io = require("../socket");
+
 const ITEMS_PER_PAGE = 2;
 
 feedController.get("/getPosts", isAuth, async (req, res, next) => {
@@ -20,6 +22,7 @@ feedController.get("/getPosts", isAuth, async (req, res, next) => {
 
     const posts = await postModel
       .find()
+      .sort({ createdAt: -1 })
       .skip((page - 1) * ITEMS_PER_PAGE)
       .limit(ITEMS_PER_PAGE);
 
@@ -38,6 +41,12 @@ feedController.post("/createPost", isAuth, async (req, res, next) => {
     const imageUrl = req.file.path;
 
     const newPost = await postModel.create({ title, content, imageUrl, creator: req.userId });
+
+    //sending to all connected clients - posts is the event emitted to all clients
+    // posts is the event name
+    // {action: 'create', post: newPost} is the data that is send along the event
+    io.getIO().emit("posts", { action: "create", post: newPost });
+
     const user = await userModel.findByIdAndUpdate({ _id: req.userId }, { $push: { posts: newPost } }, { new: true });
 
     res.status(201).json({
@@ -85,6 +94,8 @@ feedController.put("/post/:postId", isAuth, async (req, res, next) => {
       clearImage(post.imageUrl);
     }
     const updatedPost = await postModel.findByIdAndUpdate({ _id: postId }, { title, imageUrl, content }, { new: true });
+
+    io.getIO().emit("posts", { action: "update", post: updatedPost });
     res.status(200).json({ message: "Post updated!", post: updatedPost });
   } catch (err) {
     next(err);
@@ -109,6 +120,7 @@ feedController.delete("/post/:postId", isAuth, async (req, res, next) => {
     await postModel.findByIdAndDelete(postId);
     await userModel.findByIdAndUpdate(req.userId, { $pull: { posts: post._id } });
 
+    io.getIO().emit("posts", { action: "delete", posts: postId });
     res.status(200).json({ message: "Post deleted." });
   } catch (err) {
     next(err);
