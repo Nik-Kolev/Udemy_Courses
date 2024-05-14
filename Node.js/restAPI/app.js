@@ -1,6 +1,5 @@
 require("dotenv").config();
 const express = require("express");
-const router = require("./router");
 const path = require("path");
 const app = express();
 
@@ -9,7 +8,11 @@ const MONGODB_URI = "mongodb+srv://nik:ixl0lzstfu@atlascluster.37xqvmk.mongodb.n
 
 const errorHandler = require("./utils/errorHandler");
 const multer = require("multer");
+const { graphqlHTTP } = require("express-graphql");
+
 const { v4: uuidv4 } = require("uuid");
+const graphqlSchema = require("./graphql/schema");
+const graphqlResolvers = require("./graphql/resolvers");
 
 app.use(express.json());
 app.use("/images", express.static(path.join(__dirname, "images")));
@@ -40,7 +43,27 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(router);
+app.use(
+  "/graphql",
+  graphqlHTTP({
+    schema: graphqlSchema,
+    rootValue: graphqlResolvers,
+    graphiql: true,
+    customFormatErrorFn(err) {
+      if (!err.originalError) {
+        return err;
+      }
+      const data = err.originalError.data || null;
+      const message = err.message || "An error occurred.";
+      const code = err.originalError.statusCode;
+      return {
+        message,
+        code,
+        data,
+      };
+    },
+  })
+);
 
 app.use((err, req, res, next) => {
   errorHandler(err, req, res, err.statusCode || 500);
@@ -49,11 +72,7 @@ app.use((err, req, res, next) => {
 (async function startServer() {
   try {
     await mongoose.connect(MONGODB_URI);
-    const server = app.listen(8080);
-    const io = require("./socket").init(server);
-    io.on("connection", (socket) => {
-      console.log("Client connected");
-    });
+    app.listen(8080);
   } catch (err) {
     console.log(err);
   }
