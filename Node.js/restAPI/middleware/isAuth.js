@@ -6,7 +6,9 @@ module.exports = (req, res, next) => {
     const header = req.get("Authorization");
 
     if (!header) {
-      throw new ValidationError({ message: "Not Authenticated!", statusCode: 404 });
+      // throw new ValidationError({ message: "Not Authenticated!", statusCode: 404 });
+      req.isAuth = false;
+      return next();
     }
 
     const token = header.split(" ")[1];
@@ -14,12 +16,16 @@ module.exports = (req, res, next) => {
     const decodedToken = tokenVerification(token);
 
     if (!decodedToken) {
-      throw new ValidationError({ message: "Not Authenticated!", statusCode: 401 });
+      // throw new ValidationError({ message: "Not Authenticated!", statusCode: 401 });
+      req.isAuth = false;
+      return next();
     }
 
     req.userId = decodedToken.userId;
+    req.isAuth = true;
   } catch (err) {
-    next(err);
+    req.isAuth = false;
+    return next();
   }
   next();
 };

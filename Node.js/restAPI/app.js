@@ -11,6 +11,8 @@ const errorHandler = require("./utils/errorHandler");
 const multer = require("multer");
 const { graphqlHTTP } = require("express-graphql");
 
+const isAuth = require("./middleware/isAuth");
+
 const { v4: uuidv4 } = require("uuid");
 const graphqlSchema = require("./graphql/schema");
 const graphqlResolvers = require("./graphql/resolvers");
@@ -47,6 +49,8 @@ app.use((req, res, next) => {
   }
   next();
 });
+
+app.use(isAuth);
 
 app.use(
   "/graphql",
