@@ -22,9 +22,9 @@
     h5 {
         @apply text-2xl font-bold;
     }
-    h6 {
+    /* h6 {
         @apply text-1xl font-bold;
-    }
+    } */
 }
 
 @layer components {

@@ -660,6 +660,10 @@ h5{
   border-width: 0;
 }
 
+.fixed{
+  position: fixed;
+}
+
 .absolute{
   position: absolute;
 }
@@ -671,6 +675,14 @@ h5{
 .sticky{
   position: -webkit-sticky;
   position: sticky;
+}
+
+.top-24{
+  top: 6rem;
+}
+
+.right-0{
+  right: 0px;
 }
 
 .top-0{
@@ -689,8 +701,8 @@ h5{
   top: 100%;
 }
 
-.right-0{
-  right: 0px;
+.z-10{
+  z-index: 10;
 }
 
 .my-auto{
@@ -739,6 +751,10 @@ h5{
   display: block;
 }
 
+.inline-block{
+  display: inline-block;
+}
+
 .flex{
   display: flex;
 }
@@ -785,6 +801,10 @@ h5{
 
 .min-h-\[400px\]{
   min-height: 400px;
+}
+
+.w-12{
+  width: 3rem;
 }
 
 .w-8{
@@ -922,6 +942,11 @@ h5{
   border-radius: 0.125rem;
 }
 
+.rounded-l-lg{
+  border-top-left-radius: 0.5rem;
+  border-bottom-left-radius: 0.5rem;
+}
+
 .rounded-b-md{
   border-bottom-right-radius: 0.375rem;
   border-bottom-left-radius: 0.375rem;
@@ -942,6 +967,11 @@ h5{
 .bg-zinc-200{
   --tw-bg-opacity: 1;
   background-color: rgb(228 228 231 / var(--tw-bg-opacity));
+}
+
+.bg-zinc-900{
+  --tw-bg-opacity: 1;
+  background-color: rgb(24 24 27 / var(--tw-bg-opacity));
 }
 
 .bg-pink-500{
@@ -1028,6 +1058,11 @@ h5{
   text-align: right;
 }
 
+.text-3xl{
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+
 .text-2xl{
   font-size: 1.5rem;
   line-height: 2rem;
@@ -1064,6 +1099,11 @@ h5{
 .text-pink-200{
   --tw-text-opacity: 1;
   color: rgb(251 207 232 / var(--tw-text-opacity));
+}
+
+.text-zinc-900{
+  --tw-text-opacity: 1;
+  color: rgb(24 24 27 / var(--tw-text-opacity));
 }
 
 .underline{
@@ -1214,6 +1254,34 @@ h5{
 
 .peer.open ~ .peer-open\:block{
   display: block;
+}
+
+.dark .dark\:inline{
+  display: inline;
+}
+
+.dark .dark\:hidden{
+  display: none;
+}
+
+.dark .dark\:bg-zinc-900{
+  --tw-bg-opacity: 1;
+  background-color: rgb(24 24 27 / var(--tw-bg-opacity));
+}
+
+.dark .dark\:bg-zinc-200{
+  --tw-bg-opacity: 1;
+  background-color: rgb(228 228 231 / var(--tw-bg-opacity));
+}
+
+.dark .dark\:text-zinc-900{
+  --tw-text-opacity: 1;
+  color: rgb(24 24 27 / var(--tw-text-opacity));
+}
+
+.dark .dark\:text-zinc-200{
+  --tw-text-opacity: 1;
+  color: rgb(228 228 231 / var(--tw-text-opacity));
 }
 
 @media (min-width: 768px){
